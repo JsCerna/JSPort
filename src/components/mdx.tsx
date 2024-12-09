@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { MDXRemote, MDXRemoteProps } from 'next-mdx-remote/rsc';
 import React, { ReactNode } from 'react';
 
@@ -21,9 +24,9 @@ function Table({ data }: TableProps) {
     ));
     const rows = data.rows.map((row, index) => (
         <tr key={index}>
-        {row.map((cell, cellIndex) => (
-            <td key={cellIndex}>{cell}</td>
-        ))}
+            {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+            ))}
         </tr>
     ));
 
@@ -77,7 +80,7 @@ function createImage({ alt, src, ...props }: SmartImageProps & { src: string }) 
             alt={alt}
             src={src}
             {...props}/>
-        )
+    );
 }
 
 function slugify(str: string): string {
@@ -93,10 +96,10 @@ function slugify(str: string): string {
 
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
     const CustomHeading = ({ children, ...props }: TextProps) => {
-    const slug = slugify(children as string);
+        const slug = slugify(children as string);
         return (
             <HeadingLink
-                style={{marginTop: 'var(--static-space-24)', marginBottom: 'var(--static-space-12)'}}
+                style={{ marginTop: 'var(--static-space-24)', marginBottom: 'var(--static-space-12)' }}
                 level={level}
                 id={slug}
                 {...props}>
@@ -104,15 +107,15 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
             </HeadingLink>
         );
     };
-  
+
     CustomHeading.displayName = `Heading${level}`;
-  
+
     return CustomHeading;
 }
 
 function createParagraph({ children }: TextProps) {
     return (
-        <Text style={{lineHeight: '150%'}}
+        <Text style={{ lineHeight: '150%' }}
             variant="body-default-m"
             onBackground="neutral-medium"
             marginTop="8"
@@ -141,10 +144,20 @@ type CustomMDXProps = MDXRemoteProps & {
 };
 
 export function CustomMDX(props: CustomMDXProps) {
-    return (
-        <MDXRemote
-            {...props}
-            components={{ ...components, ...(props.components || {}) }}
-        />
-    );
+    const [mdxContent, setMdxContent] = useState<ReactNode>(null);
+
+    useEffect(() => {
+        const fetchMDXContent = async () => {
+            // Pasa un único objeto con 'source' y 'components' aquí
+            const mdx = await MDXRemote({
+                ...props, // Pasa todas las props incluyendo 'source'
+                components: { ...components, ...(props.components || {}) } // Agrega los componentes personalizados
+            });
+            setMdxContent(mdx); // set the resolved MDX content to state
+        };
+        
+        fetchMDXContent();
+    }, [props]);
+
+    return <>{mdxContent}</>;
 }
