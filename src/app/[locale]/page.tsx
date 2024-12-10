@@ -122,11 +122,16 @@ export default function Home(
           </RevealFx>
         </Flex>
       </Flex>
-      {/* Eliminamos la sección de trabajos realizados y los blogs */}
-      {newsletter.display &&
-        <Mailchimp newsletter={newsletter} />
-      }
+
+      {/* Imagen badge con hipervínculo */}
+      <Flex justifyContent="center" marginY="xl">
+        <a href="https://www.credly.com/badges/0e7a7427-01ae-4958-852a-42f6c6919c7d/public_url" target="_blank" rel="noopener noreferrer">
+          <img src="/images/home/dev.png" alt="Badge" style={{ maxWidth: '100%', height: 'auto' }} />
+        </a>
+      </Flex>
+
+      {/* Sección de Newsletter */}
+      {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Flex>
   );
 }
-

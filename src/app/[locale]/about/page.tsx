@@ -1,7 +1,7 @@
 import { Avatar, Button, Flex, Heading, Icon, IconButton, SmartImage, Tag, Text } from '@/once-ui/components';
 import { baseURL, renderContent } from '@/app/resources';
 import TableOfContents from '@/components/about/TableOfContents';
-import styles from '@/components/about/about.module.scss'
+import styles from '@/components/about/about.module.scss';
 import { getTranslations, unstable_setRequestLocale } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 
@@ -10,32 +10,32 @@ export async function generateMetadata(
 ) {
     const t = await getTranslations();
     const {person, about, social } = renderContent(t);
-	const title = about.title;
-	const description = about.description;
-	const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
+    const title = about.title;
+    const description = about.description;
+    const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
-	return {
-		title,
-		description,
-		openGraph: {
-			title,
-			description,
-			type: 'website',
-			url: `https://${baseURL}/${locale}/about`,
-			images: [
-				{
-					url: ogImage,
-					alt: title,
-				},
-			],
-		},
-		twitter: {
-			card: 'summary_large_image',
-			title,
-			description,
-			images: [ogImage],
-		},
-	};
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `https://${baseURL}/${locale}/about`,
+            images: [
+                {
+                    url: ogImage,
+                    alt: title,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [ogImage],
+        },
+    };
 }
 
 export default function About(
@@ -51,11 +51,6 @@ export default function About(
             items: []
         },
         { 
-            title: about.work.title,
-            display: about.work.display,
-            items: about.work.experiences.map(experience => experience.company)
-        },
-        { 
             title: about.studies.title,
             display: about.studies.display,
             items: about.studies.institutions.map(institution => institution.name)
@@ -65,7 +60,8 @@ export default function About(
             display: about.technical.display,
             items: about.technical.skills.map(skill => skill.title)
         },
-    ]
+    ];
+
     return (
         <Flex
             fillWidth maxWidth="m"
@@ -85,10 +81,6 @@ export default function About(
                         sameAs: social
                             .filter((item) => item.link && !item.link.startsWith('mailto:')) // Filter out empty links and email links
                             .map((item) => item.link),
-                        worksFor: {
-                            '@type': 'Organization',
-                            name: about.work.experiences[0].company || ''
-                        },
                     }),
                 }}
             />
@@ -211,84 +203,6 @@ export default function About(
                         </Flex>
                     )}
 
-                    { about.work.display && (
-                        <>
-                            <Heading
-                                as="h2"
-                                id={about.work.title}
-                                variant="display-strong-s"
-                                marginBottom="m">
-                                {about.work.title}
-                            </Heading>
-                            <Flex
-                                direction="column"
-                                fillWidth gap="l" marginBottom="40">
-                                {about.work.experiences.map((experience, index) => (
-                                    <Flex
-                                        key={`${experience.company}-${experience.role}-${index}`}
-                                        fillWidth
-                                        direction="column">
-                                        <Flex
-                                            fillWidth
-                                            justifyContent="space-between"
-                                            alignItems="flex-end"
-                                            marginBottom="4">
-                                            <Text
-                                                id={experience.company}
-                                                variant="heading-strong-l">
-                                                {experience.company}
-                                            </Text>
-                                            <Text
-                                                variant="heading-default-xs"
-                                                onBackground="neutral-weak">
-                                                {experience.timeframe}
-                                            </Text>
-                                        </Flex>
-                                        <Text
-                                            variant="body-default-s"
-                                            onBackground="brand-weak"
-                                            marginBottom="m">
-                                            {experience.role}
-                                        </Text>
-                                        <Flex
-                                            as="ul"
-                                            direction="column" gap="16">
-                                            {experience.achievements.map((achievement: string, index: any) => (
-                                                <Text
-                                                    as="li"
-                                                    variant="body-default-m"
-                                                    key={`${experience.company}-${index}`}>
-                                                    {achievement}
-                                                </Text>
-                                            ))}
-                                        </Flex>
-                                        {experience.images.length > 0 && (
-                                            <Flex
-                                                fillWidth paddingTop="m" paddingLeft="40"
-                                                wrap>
-                                                {experience.images.map((image, index) => (
-                                                    <Flex
-                                                        key={index}
-                                                        border="neutral-medium"
-                                                        borderStyle="solid-1"
-                                                        radius="m"
-                                                        minWidth={image.width} height={image.height}>
-                                                        <SmartImage
-                                                            enlarge
-                                                            radius="m"
-                                                            sizes={image.width.toString()}
-                                                            alt={image.alt}
-                                                            src={image.src}/>
-                                                    </Flex>
-                                                ))}
-                                            </Flex>
-                                        )}
-                                    </Flex>
-                                ))}
-                            </Flex>
-                        </>
-                    )}
-
                     { about.studies.display && (
                         <>
                             <Heading
@@ -333,43 +247,20 @@ export default function About(
                             <Flex
                                 direction="column"
                                 fillWidth gap="l">
-                                {about.technical.skills.map((skill, index) => (
-                                    <Flex
-                                        key={`${skill}-${index}`}
-                                        fillWidth gap="4"
-                                        direction="column">
-                                        <Text
-                                            variant="heading-strong-l">
-                                            {skill.title}
-                                        </Text>
-                                        <Text
-                                            variant="body-default-m"
-                                            onBackground="neutral-weak">
-                                            {skill.description}
-                                        </Text>
-                                        {skill.images.length > 0 && (
-                                            <Flex
-                                                fillWidth paddingTop="m" gap="12"
-                                                wrap>
-                                                {skill.images.map((image, index) => (
-                                                    <Flex
-                                                        key={index}
-                                                        border="neutral-medium"
-                                                        borderStyle="solid-1"
-                                                        radius="m"
-                                                        minWidth={image.width} height={image.height}>
-                                                        <SmartImage
-                                                            enlarge
-                                                            radius="m"
-                                                            sizes={image.width.toString()}
-                                                            alt={image.alt}
-                                                            src={image.src}/>
-                                                    </Flex>
-                                                ))}
-                                            </Flex>
-                                        )}
-                                    </Flex>
-                                ))}
+                                {/* Lista de tecnologías que manejas */}
+                                <Flex gap="16" style={{ flexWrap: 'wrap' }}>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>MongoDB</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>macOS</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>HTML5</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>CSS</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>JavaScript</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>Bootstrap</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>Firebase</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>Next.js</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>Tailwind</Text>
+                                <Text style={{ fontSize: '1.5rem', flexBasis: '33.33%' }}>Node.js</Text>
+                            </Flex>
+
                             </Flex>
                         </>
                     )}
